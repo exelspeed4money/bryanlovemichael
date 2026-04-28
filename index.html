@@ -7,6 +7,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
+*{
+  -webkit-tap-highlight-color: transparent;
+}
+
 body{
   margin:0;
   font-family:'Fredoka',sans-serif;
@@ -16,17 +20,16 @@ body{
   align-items:flex-start;
   padding-top:60px;
   height:100vh;
-  overflow:hidden;
 }
 
 /* container */
 .container{
   width:420px;
   background:#fff;
-  border:2px solid #000; /* lebih tipis */
+  border:2px solid #000;
   border-radius:28px;
   padding:30px;
-  box-shadow:4px 4px 0 rgba(0,0,0,0.7); /* lebih soft */
+  box-shadow:4px 4px 0 rgba(0,0,0,0.7);
   text-align:center;
 }
 
@@ -48,7 +51,7 @@ body{
   width:170px;
   height:170px;
   border-radius:22px;
-  border:2px solid #000; /* tipis */
+  border:2px solid #000;
   box-shadow:4px 4px 0 rgba(0,0,0,0.7);
   cursor:pointer;
   display:flex;
@@ -74,8 +77,7 @@ body{
 }
 
 .btn:active{
-  transform:translate(3px,3px);
-  box-shadow:1px 1px 0 rgba(0,0,0,0.7);
+  transform:scale(0.95);
 }
 
 .bryan{ background:#ff7a3d; }
@@ -89,7 +91,7 @@ body{
   display:none;
 }
 
-/* winner box */
+/* winner */
 .winner-box{
   margin-top:25px;
   height:130px;
@@ -159,6 +161,24 @@ const voteRef = doc(db,"votes","main");
 
 let voted = false;
 
+/* cek localStorage */
+if(localStorage.getItem("voted")){
+  voted = true;
+}
+
+/* disable tombol kalau udah vote */
+function disableButtons(){
+  document.querySelectorAll(".btn").forEach(b=>{
+    b.style.opacity="0.5";
+    b.style.pointerEvents="none";
+  });
+}
+
+if(voted){
+  disableButtons();
+}
+
+/* emoji */
 const emojis = ["🔥","💥","🎉","😍","⚡"];
 setInterval(()=>{
   const e = document.createElement("div");
@@ -169,17 +189,25 @@ setInterval(()=>{
   setTimeout(()=>e.remove(),4000);
 },700);
 
+/* vote */
 window.vote = async function(name){
-  if(voted) return;
+  if(voted){
+    alert("Udah vote, jangan rakus");
+    return;
+  }
 
   await updateDoc(voteRef,{
     [name]: increment(1)
   });
 
+  localStorage.setItem("voted","yes");
   voted = true;
+
+  disableButtons();
   load(true);
 }
 
+/* load */
 async function load(show=false){
   const snap = await getDoc(voteRef);
   const data = snap.data();
