@@ -212,8 +212,8 @@ async function load(show=false){
   const snap = await getDoc(voteRef);
   const data = snap.data();
 
-  if(show){
-    resultText.style.display="block";
+  if(show || localStorage.getItem("voted")){
+  resultText.style.display="block";
   }
 
   resultText.innerText =
