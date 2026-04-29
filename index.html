@@ -106,6 +106,23 @@ body{
   font-weight:600;
 }
 
+/* credit */
+.credit{
+  margin-top:15px;
+  font-size:14px;
+  opacity:0.8;
+}
+
+.credit a{
+  color:#007bff;
+  text-decoration:none;
+  font-weight:600;
+}
+
+.credit a:hover{
+  text-decoration:underline;
+}
+
 /* emoji */
 .emoji{
   position:fixed;
@@ -142,6 +159,12 @@ body{
   <div class="winner-box" id="winnerText">
     ⏳ Diumumin 2 Mei 2026
   </div>
+
+  <!-- CREDIT -->
+  <div class="credit">
+    buatan <a href="https://wa.me/62XXXXXXXXXX" target="_blank">d4rkz</a>
+  </div>
+
 </div>
 
 <script type="module">
@@ -161,12 +184,10 @@ const voteRef = doc(db,"votes","main");
 
 let voted = false;
 
-/* cek localStorage */
 if(localStorage.getItem("voted")){
   voted = true;
 }
 
-/* disable tombol kalau udah vote */
 function disableButtons(){
   document.querySelectorAll(".btn").forEach(b=>{
     b.style.opacity="0.5";
@@ -178,7 +199,6 @@ if(voted){
   disableButtons();
 }
 
-/* emoji */
 const emojis = ["🔥","💥","🎉","😍","⚡"];
 setInterval(()=>{
   const e = document.createElement("div");
@@ -189,7 +209,6 @@ setInterval(()=>{
   setTimeout(()=>e.remove(),4000);
 },700);
 
-/* vote */
 window.vote = async function(name){
   if(voted){
     alert("Udah vote, jangan rakus");
@@ -207,13 +226,12 @@ window.vote = async function(name){
   load(true);
 }
 
-/* load */
 async function load(show=false){
   const snap = await getDoc(voteRef);
   const data = snap.data();
 
   if(show || localStorage.getItem("voted")){
-  resultText.style.display="block";
+    resultText.style.display="block";
   }
 
   resultText.innerText =
