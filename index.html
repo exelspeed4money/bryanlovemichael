@@ -20,6 +20,7 @@ body{
   align-items:flex-start;
   padding-top:60px;
   height:100vh;
+  overflow:hidden; /* FIX emoji biar gak berantakan */
 }
 
 .container{
@@ -30,6 +31,7 @@ body{
   padding:30px;
   box-shadow:4px 4px 0 rgba(0,0,0,0.7);
   text-align:center;
+  z-index:2;
 }
 
 .title{
@@ -84,7 +86,6 @@ body{
   margin-top:25px;
   font-size:19px;
   font-weight:600;
-  display:none;
 }
 
 .winner-box{
@@ -117,15 +118,23 @@ body{
   text-decoration:underline;
 }
 
+/* emoji FIX */
 .emoji{
   position:fixed;
   font-size:42px;
   animation:float 4s linear forwards;
+  pointer-events:none;
+  z-index:1;
 }
 
 @keyframes float{
-  0%{transform:translateY(100vh);}
-  100%{transform:translateY(-10vh);opacity:0;}
+  0%{
+    transform:translateY(100vh);
+  }
+  100%{
+    transform:translateY(-20vh);
+    opacity:0;
+  }
 }
 </style>
 </head>
@@ -156,7 +165,6 @@ body{
   <div class="credit">
     buatan <a href="https://wa.me/6282189289988" target="_blank">Exel butuh duit</a>
   </div>
-
 </div>
 
 <script type="module">
@@ -187,6 +195,7 @@ if(voted){
   disableButtons();
 }
 
+/* emoji spawn */
 const emojis = ["🔥","💥","🎉","😍","⚡"];
 setInterval(()=>{
   const e = document.createElement("div");
@@ -197,6 +206,7 @@ setInterval(()=>{
   setTimeout(()=>e.remove(),4000);
 },700);
 
+/* vote */
 window.vote = async function(name){
   if(voted){
     alert("Udah vote, jangan rakus");
@@ -214,15 +224,14 @@ window.vote = async function(name){
   load();
 }
 
+/* load */
 async function load(){
   const snap = await getDoc(voteRef);
   const data = snap.data();
 
-  resultText.style.display="block";
-
-  // INI FIX UTAMA LU
+  // FIX tanda tanya tapi tetep ada angka
   resultText.innerText =
-  "Bryan: ? ("+data.bryan+") | Michael: ? ("+data.michael+")";
+    "Bryan: ? ("+data.bryan+") | Michael: ? ("+data.michael+")";
 
   const now = new Date();
   const end = new Date("2026-05-02T23:59:59");
