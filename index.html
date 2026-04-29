@@ -22,7 +22,6 @@ body{
   height:100vh;
 }
 
-/* container */
 .container{
   width:420px;
   background:#fff;
@@ -33,14 +32,12 @@ body{
   text-align:center;
 }
 
-/* title */
 .title{
   font-size:30px;
   font-weight:700;
   margin-bottom:25px;
 }
 
-/* tombol */
 .vote-wrap{
   display:flex;
   gap:20px;
@@ -83,7 +80,6 @@ body{
 .bryan{ background:#ff7a3d; }
 .michael{ background:#36c26e; }
 
-/* hasil */
 .result{
   margin-top:25px;
   font-size:19px;
@@ -91,7 +87,6 @@ body{
   display:none;
 }
 
-/* winner */
 .winner-box{
   margin-top:25px;
   height:130px;
@@ -106,7 +101,6 @@ body{
   font-weight:600;
 }
 
-/* credit */
 .credit{
   margin-top:15px;
   font-size:14px;
@@ -123,7 +117,6 @@ body{
   text-decoration:underline;
 }
 
-/* emoji */
 .emoji{
   position:fixed;
   font-size:42px;
@@ -160,7 +153,6 @@ body{
     ⏳ Diumumin 2 Mei 2026
   </div>
 
-  <!-- CREDIT -->
   <div class="credit">
     buatan <a href="https://wa.me/6282189289988" target="_blank">Exel butuh duit</a>
   </div>
@@ -182,11 +174,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const voteRef = doc(db,"votes","main");
 
-let voted = false;
-
-if(localStorage.getItem("voted")){
-  voted = true;
-}
+let voted = localStorage.getItem("voted") ? true : false;
 
 function disableButtons(){
   document.querySelectorAll(".btn").forEach(b=>{
@@ -223,23 +211,23 @@ window.vote = async function(name){
   voted = true;
 
   disableButtons();
-  load(true);
+  load();
 }
 
-async function load(show=false){
+async function load(){
   const snap = await getDoc(voteRef);
   const data = snap.data();
 
-  if(show || localStorage.getItem("voted")){
-    resultText.style.display="block";
+  resultText.style.display="block";
+
+  // INI FIX UTAMA LU
+  if(!voted){
+    resultText.innerText = "Bryan: ? | Michael: ?";
+  }else{
+    resultText.innerText =
+      "Bryan: "+data.bryan+" | Michael: "+data.michael;
   }
 
-  if(!show && !localStorage.getItem("voted")){
-  resultText.innerText = "Bryan: ? | Michael: ?";
-}else{
-  resultText.innerText =
-    "Bryan: "+data.bryan+" | Michael: "+data.michael;
-  }
   const now = new Date();
   const end = new Date("2026-05-02T23:59:59");
 
