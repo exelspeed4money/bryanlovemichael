@@ -20,7 +20,7 @@ body{
   align-items:flex-start;
   padding-top:60px;
   height:100vh;
-  overflow:hidden; /* FIX emoji biar gak berantakan */
+  overflow:hidden;
 }
 
 .container{
@@ -118,7 +118,6 @@ body{
   text-decoration:underline;
 }
 
-/* emoji FIX */
 .emoji{
   position:fixed;
   font-size:42px;
@@ -128,13 +127,8 @@ body{
 }
 
 @keyframes float{
-  0%{
-    transform:translateY(100vh);
-  }
-  100%{
-    transform:translateY(-20vh);
-    opacity:0;
-  }
+  0%{transform:translateY(100vh);}
+  100%{transform:translateY(-20vh);opacity:0;}
 }
 </style>
 </head>
@@ -195,7 +189,7 @@ if(voted){
   disableButtons();
 }
 
-/* emoji spawn */
+/* emoji */
 const emojis = ["🔥","💥","🎉","😍","⚡"];
 setInterval(()=>{
   const e = document.createElement("div");
@@ -229,9 +223,12 @@ async function load(){
   const snap = await getDoc(voteRef);
   const data = snap.data();
 
-  // FIX tanda tanya tapi tetep ada angka
-  resultText.innerText =
-    "Bryan: ? ("+data.bryan+") | Michael: ? ("+data.michael+")";
+  if(!voted){
+    resultText.innerText = "Bryan: ? | Michael: ?";
+  }else{
+    resultText.innerText =
+      "Bryan: "+data.bryan+" | Michael: "+data.michael;
+  }
 
   const now = new Date();
   const end = new Date("2026-05-02T23:59:59");
