@@ -221,12 +221,8 @@ async function load(){
   resultText.style.display="block";
 
   // INI FIX UTAMA LU
-  if(!voted){
-    resultText.innerText = "Bryan: ? | Michael: ?";
-  }else{
-    resultText.innerText =
-      "Bryan: "+data.bryan+" | Michael: "+data.michael;
-  }
+  resultText.innerText =
+  "Bryan: ? ("+data.bryan+") | Michael: ? ("+data.michael+")";
 
   const now = new Date();
   const end = new Date("2026-05-02T23:59:59");
