@@ -234,9 +234,12 @@ async function load(show=false){
     resultText.style.display="block";
   }
 
+  if(!show && !localStorage.getItem("voted")){
+  resultText.innerText = "Bryan: ? | Michael: ?";
+}else{
   resultText.innerText =
     "Bryan: "+data.bryan+" | Michael: "+data.michael;
-
+  }
   const now = new Date();
   const end = new Date("2026-05-02T23:59:59");
 
