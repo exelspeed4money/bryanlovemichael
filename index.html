@@ -20,9 +20,9 @@ body{
   align-items:flex-start;
   padding-top:60px;
   height:100vh;
-  overflow:hidden;
 }
 
+/* container */
 .container{
   width:420px;
   background:#fff;
@@ -31,15 +31,16 @@ body{
   padding:30px;
   box-shadow:4px 4px 0 rgba(0,0,0,0.7);
   text-align:center;
-  z-index:2;
 }
 
+/* title */
 .title{
   font-size:30px;
   font-weight:700;
   margin-bottom:25px;
 }
 
+/* tombol */
 .vote-wrap{
   display:flex;
   gap:20px;
@@ -58,6 +59,7 @@ body{
   align-items:center;
   justify-content:center;
   transition:0.1s;
+  position:relative;
 }
 
 .btn img{
@@ -82,12 +84,32 @@ body{
 .bryan{ background:#ff7a3d; }
 .michael{ background:#36c26e; }
 
+/* efek +1 */
+.plus{
+  position:absolute;
+  top:10px;
+  right:10px;
+  font-size:20px;
+  font-weight:700;
+  color:#fff;
+  animation:pop 0.8s ease forwards;
+}
+
+@keyframes pop{
+  0%{transform:scale(0.5) translateY(10px);opacity:0;}
+  50%{transform:scale(1.2);}
+  100%{transform:translateY(-20px);opacity:0;}
+}
+
+/* hasil */
 .result{
   margin-top:25px;
   font-size:19px;
   font-weight:600;
+  display:none;
 }
 
+/* winner */
 .winner-box{
   margin-top:25px;
   height:130px;
@@ -102,6 +124,7 @@ body{
   font-weight:600;
 }
 
+/* credit */
 .credit{
   margin-top:15px;
   font-size:14px;
@@ -114,21 +137,16 @@ body{
   font-weight:600;
 }
 
-.credit a:hover{
-  text-decoration:underline;
-}
-
+/* emoji */
 .emoji{
   position:fixed;
   font-size:42px;
   animation:float 4s linear forwards;
-  pointer-events:none;
-  z-index:1;
 }
 
 @keyframes float{
   0%{transform:translateY(100vh);}
-  100%{transform:translateY(-20vh);opacity:0;}
+  100%{transform:translateY(-10vh);opacity:0;}
 }
 </style>
 </head>
@@ -139,12 +157,12 @@ body{
   <div class="title">🔥 PILIH CUII 🔥</div>
 
   <div class="vote-wrap">
-    <div class="btn bryan" onclick="vote('bryan')">
+    <div class="btn bryan" onclick="vote('bryan', this)">
       <img src="bryan2.jpg">
       <span>BRYAN</span>
     </div>
 
-    <div class="btn michael" onclick="vote('michael')">
+    <div class="btn michael" onclick="vote('michael', this)">
       <img src="michael.jpg">
       <span>MICHAEL</span>
     </div>
@@ -159,6 +177,7 @@ body{
   <div class="credit">
     buatan <a href="https://wa.me/6282189289988" target="_blank">Exel butuh duit</a>
   </div>
+
 </div>
 
 <script type="module">
@@ -167,27 +186,25 @@ import { getFirestore, doc, getDoc, updateDoc, increment }
 from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDs1Zs_ttlnhb1EQQoTZuqCRsbcQ4Twong",
-  authDomain: "bryanormichael.firebaseapp.com",
-  projectId: "bryanormichael",
+  apiKey: "ISI SENDIRI",
+  authDomain: "ISI SENDIRI",
+  projectId: "ISI SENDIRI",
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const voteRef = doc(db,"votes","main");
 
-let voted = localStorage.getItem("voted") ? true : false;
+let voted = localStorage.getItem("voted");
 
+/* disable tombol */
 function disableButtons(){
   document.querySelectorAll(".btn").forEach(b=>{
     b.style.opacity="0.5";
     b.style.pointerEvents="none";
   });
 }
-
-if(voted){
-  disableButtons();
-}
+if(voted) disableButtons();
 
 /* emoji */
 const emojis = ["🔥","💥","🎉","😍","⚡"];
@@ -201,11 +218,18 @@ setInterval(()=>{
 },700);
 
 /* vote */
-window.vote = async function(name){
+window.vote = async function(name, el){
   if(voted){
     alert("Udah vote, jangan rakus");
     return;
   }
+
+  // efek +1
+  const plus = document.createElement("div");
+  plus.className = "plus";
+  plus.innerText = "+1";
+  el.appendChild(plus);
+  setTimeout(()=>plus.remove(),800);
 
   await updateDoc(voteRef,{
     [name]: increment(1)
@@ -215,20 +239,21 @@ window.vote = async function(name){
   voted = true;
 
   disableButtons();
-  load();
+  load(true);
 }
 
 /* load */
-async function load(){
+async function load(show=false){
   const snap = await getDoc(voteRef);
   const data = snap.data();
 
-  if(!voted){
-    resultText.innerText = "Bryan: ? | Michael: ?";
-  }else{
-    resultText.innerText =
-      "Bryan: "+data.bryan+" | Michael: "+data.michael;
+  if(show || localStorage.getItem("voted")){
+    resultText.style.display="block";
   }
+
+  // SELALU tanda tanya
+  resultText.innerText =
+    "Bryan: ? ("+data.bryan+") | Michael: ? ("+data.michael+")";
 
   const now = new Date();
   const end = new Date("2026-05-02T23:59:59");
